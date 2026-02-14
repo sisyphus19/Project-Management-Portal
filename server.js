@@ -1,30 +1,30 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const bcrypt = require("bcryptjs");
-const { Pool } = require('pg');
+const { Pool } = require("@neondatabase/serverless");
 
 const app = express();
 const port = process.env.PORT || 10000;
 
-// PostgreSQL Database Connection
+// Create pool using Neon serverless driver (HTTP-based)
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false
-  }
+  connectionString: process.env.DATABASE_URL
 });
 
-// Test database connection
-pool.connect((err, client, release) => {
-  if (err) {
-    console.error('Error connecting to PostgreSQL database:', err.stack);
-  } else {
-    console.log('Successfully connected to PostgreSQL database');
-    release();
+// Test database connection immediately on startup
+(async function testDBConnection() {
+  try {
+    const client = await pool.connect();
+    console.log("Successfully connected to PostgreSQL database");
+    client.release();
+  } catch (error) {
+    console.error("Error connecting to PostgreSQL database:", error);
   }
-});
+})();
+
 
 // Middleware
 app.use(bodyParser.json());
@@ -257,11 +257,11 @@ initializeDatabase();
 // REGISTER endpoint
 app.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
- 
+
   if (!email || !password) {
     return res.status(400).json({ success: false, message: "Email and password are required." });
   }
- 
+
   if (password.length < 6) {
     return res.status(400).json({ success: false, message: "Password must be at least 6 characters long." });
   }
@@ -269,12 +269,12 @@ app.post("/register", async (req, res) => {
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-   
+
     const result = await pool.query(
       "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
       [email.toLowerCase().trim(), hashedPassword]
     );
-    
+
     res.json({
       success: true,
       id: result.rows[0].id,
@@ -293,11 +293,11 @@ app.post("/register", async (req, res) => {
 // SIGNUP endpoint (backward compatibility)
 app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
- 
+
   if (!email || !password) {
     return res.status(400).json({ success: false, message: "Email and password are required." });
   }
- 
+
   if (password.length < 6) {
     return res.status(400).json({ success: false, message: "Password must be at least 6 characters long." });
   }
@@ -305,12 +305,12 @@ app.post("/signup", async (req, res) => {
   try {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-   
+
     const result = await pool.query(
       "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING id, email",
       [email.toLowerCase().trim(), hashedPassword]
     );
-    
+
     res.json({
       success: true,
       id: result.rows[0].id,
@@ -329,7 +329,7 @@ app.post("/signup", async (req, res) => {
 // LOGIN endpoint
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
- 
+
   if (!email || !password) {
     return res.status(400).json({ success: false, message: "Email and password are required." });
   }
@@ -339,18 +339,18 @@ app.post("/login", async (req, res) => {
       "SELECT * FROM users WHERE email = $1",
       [email.toLowerCase().trim()]
     );
-   
+
     if (result.rows.length === 0) {
       return res.status(400).json({ success: false, message: "Invalid credentials." });
     }
 
     const user = result.rows[0];
     const passwordMatch = await bcrypt.compare(password, user.password);
-   
+
     if (!passwordMatch) {
       return res.status(400).json({ success: false, message: "Invalid credentials." });
     }
-   
+
     res.json({
       success: true,
       email: user.email,
@@ -365,11 +365,11 @@ app.post("/login", async (req, res) => {
 // ===================== PROJECTS API WITH PROGRESS =====================
 app.post("/projects", async (req, res) => {
   const { name, owner_email, colleagues, progress } = req.body;
- 
+
   if (!name || !owner_email) {
     return res.status(400).json({ error: "Project name and owner email are required." });
   }
- 
+
   try {
     const result = await pool.query(
       "INSERT INTO projects (name, owner_email, colleagues, progress) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -454,13 +454,13 @@ app.get("/projects/:id/description", async (req, res) => {
       "SELECT * FROM projects WHERE id = $1",
       [req.params.id]
     );
-    
+
     if (result.rows.length === 0) {
       return res.json({});
     }
-    
+
     const row = result.rows[0];
-    
+
     // Convert snake_case to camelCase for frontend
     const description = {
       projectTitle: row.project_title,
@@ -492,7 +492,7 @@ app.get("/projects/:id/description", async (req, res) => {
       approvalDate: row.approval_date,
       approvalSignature: row.approval_signature
     };
-    
+
     res.json(description);
   } catch (error) {
     console.error('Error fetching description:', error);
@@ -501,18 +501,18 @@ app.get("/projects/:id/description", async (req, res) => {
 });
 
 app.put("/projects/:id/description", async (req, res) => {
-  const { 
-    projectTitle, notes, colleagueName, colleaguePhone, colleagueEmail, 
-    colleagueAddress1, colleagueAddress2, colleagueAddress3, yourName, 
-    yourPhone, yourEmail, yourAddress1, yourAddress2, yourAddress3, 
-    objectives, timeline, primaryAudience, secondaryAudience, callAction, 
-    competition, graphics, photography, multimedia, otherInfo, clientName, 
-    clientComments, approvalDate, approvalSignature 
+  const {
+    projectTitle, notes, colleagueName, colleaguePhone, colleagueEmail,
+    colleagueAddress1, colleagueAddress2, colleagueAddress3, yourName,
+    yourPhone, yourEmail, yourAddress1, yourAddress2, yourAddress3,
+    objectives, timeline, primaryAudience, secondaryAudience, callAction,
+    competition, graphics, photography, multimedia, otherInfo, clientName,
+    clientComments, approvalDate, approvalSignature
   } = req.body;
-  
+
   console.log('Received update request for project:', req.params.id);
   console.log('Data received:', req.body);
- 
+
   try {
     const result = await pool.query(
       `UPDATE projects SET
@@ -525,17 +525,17 @@ app.put("/projects/:id/description", async (req, res) => {
         WHERE id = $29
         RETURNING *`,
       [
-        projectTitle, notes, colleagueName, colleaguePhone, colleagueEmail, 
-        colleagueAddress1, colleagueAddress2, colleagueAddress3, yourName, 
-        yourPhone, yourEmail, yourAddress1, yourAddress2, yourAddress3, 
-        objectives, timeline, primaryAudience, secondaryAudience, callAction, 
-        competition, graphics, photography, multimedia, otherInfo, clientName, 
+        projectTitle, notes, colleagueName, colleaguePhone, colleagueEmail,
+        colleagueAddress1, colleagueAddress2, colleagueAddress3, yourName,
+        yourPhone, yourEmail, yourAddress1, yourAddress2, yourAddress3,
+        objectives, timeline, primaryAudience, secondaryAudience, callAction,
+        competition, graphics, photography, multimedia, otherInfo, clientName,
         clientComments, approvalDate, approvalSignature, req.params.id
       ]
     );
-    
+
     console.log('Update successful, rows affected:', result.rowCount);
-    
+
     // Return the updated data in camelCase format
     const row = result.rows[0];
     const updatedDescription = {
@@ -568,7 +568,7 @@ app.put("/projects/:id/description", async (req, res) => {
       approvalDate: row.approval_date,
       approvalSignature: row.approval_signature
     };
-    
+
     res.json({ updated: result.rowCount, data: updatedDescription });
   } catch (error) {
     console.error('Update error:', error);
@@ -580,7 +580,7 @@ app.put("/projects/:id/description", async (req, res) => {
 app.get("/ideas/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM ideas WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM ideas WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -633,7 +633,7 @@ app.delete("/ideas/:id", async (req, res) => {
 app.get("/notes/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM notes WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM notes WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -686,7 +686,7 @@ app.delete("/notes/:id", async (req, res) => {
 app.get("/career_goals/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM career_goals WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM career_goals WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -699,7 +699,7 @@ app.get("/career_goals/:email", async (req, res) => {
 app.get("/career/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM career_goals WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM career_goals WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -710,12 +710,12 @@ app.get("/career/:email", async (req, res) => {
 });
 
 app.post("/career_goals", async (req, res) => {
-  const { 
-    user_email, title, description, progress, goal_type, target_date, 
-    total_stages, current_stage, start_date, stage_description, created_date 
+  const {
+    user_email, title, description, progress, goal_type, target_date,
+    total_stages, current_stage, start_date, stage_description, created_date
   } = req.body;
   const date = created_date || new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       `INSERT INTO career_goals (
@@ -723,8 +723,8 @@ app.post("/career_goals", async (req, res) => {
         total_stages, current_stage, start_date, stage_description, created_date
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
       [
-        user_email, title, description, progress || 0, goal_type || 'general', 
-        target_date, total_stages || 5, current_stage || 0, start_date, 
+        user_email, title, description, progress || 0, goal_type || 'general',
+        target_date, total_stages || 5, current_stage || 0, start_date,
         stage_description, date
       ]
     );
@@ -736,11 +736,11 @@ app.post("/career_goals", async (req, res) => {
 });
 
 app.put("/career_goals/:id", async (req, res) => {
-  const { 
-    title, description, progress, goal_type, target_date, 
-    total_stages, current_stage, start_date, stage_description 
+  const {
+    title, description, progress, goal_type, target_date,
+    total_stages, current_stage, start_date, stage_description
   } = req.body;
-  
+
   try {
     const result = await pool.query(
       `UPDATE career_goals SET 
@@ -749,8 +749,8 @@ app.put("/career_goals/:id", async (req, res) => {
         start_date = $8, stage_description = $9 
       WHERE id = $10`,
       [
-        title, description, progress, goal_type, target_date, 
-        total_stages, current_stage, start_date, stage_description, 
+        title, description, progress, goal_type, target_date,
+        total_stages, current_stage, start_date, stage_description,
         req.params.id
       ]
     );
@@ -765,7 +765,7 @@ app.delete("/career_goals/:id", async (req, res) => {
   try {
     // Delete history entries first (CASCADE should handle this, but being explicit)
     await pool.query("DELETE FROM career_stage_history WHERE goal_id = $1", [req.params.id]);
-    
+
     // Delete the goal
     const result = await pool.query("DELETE FROM career_goals WHERE id = $1", [req.params.id]);
     res.json({ deleted: result.rowCount });
@@ -792,7 +792,7 @@ app.get("/career_goals/:id/history", async (req, res) => {
 app.post("/career_goals/:id/history", async (req, res) => {
   const { stage, description } = req.body;
   const updated_date = new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       "INSERT INTO career_stage_history (goal_id, stage, description, updated_date) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -822,7 +822,7 @@ app.delete("/career_goals/:goalId/history/:historyId", async (req, res) => {
 app.get("/future_work/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM future_work WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM future_work WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -835,7 +835,7 @@ app.get("/future_work/:email", async (req, res) => {
 app.get("/future/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM future_work WHERE user_email = $1 ORDER BY created_date DESC", 
+      "SELECT * FROM future_work WHERE user_email = $1 ORDER BY created_date DESC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -848,7 +848,7 @@ app.get("/future/:email", async (req, res) => {
 app.post("/future_work", async (req, res) => {
   const { user_email, title, description, priority, timeline, created_date } = req.body;
   const date = created_date || new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       "INSERT INTO future_work (user_email, title, description, priority, timeline, created_date) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
@@ -889,7 +889,7 @@ app.delete("/future_work/:id", async (req, res) => {
 app.get("/deadlines/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM deadlines WHERE user_email = $1 ORDER BY due_date ASC", 
+      "SELECT * FROM deadlines WHERE user_email = $1 ORDER BY due_date ASC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -902,7 +902,7 @@ app.get("/deadlines/:email", async (req, res) => {
 app.post("/deadlines", async (req, res) => {
   const { user_email, title, description, due_date, priority, status, created_date } = req.body;
   const date = created_date || new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       "INSERT INTO deadlines (user_email, title, description, due_date, priority, status, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *",
@@ -952,7 +952,7 @@ app.get("/events/:email", async (req, res) => {
       FROM calendar_events WHERE user_email = $1 ORDER BY event_date ASC, start_time ASC`,
       [req.params.email]
     );
-    
+
     const events = result.rows.map(row => ({
       ...row,
       isAllDay: Boolean(row.isallday),
@@ -967,15 +967,15 @@ app.get("/events/:email", async (req, res) => {
 });
 
 app.post("/events", async (req, res) => {
-  const { 
-    userEmail, title, description, date, start, end, location, category, 
-    attendees, reminder, isAllDay, recurrence, recurrenceEnd, showAs, 
-    priority, isOnline, meetingLink, attachments, repeatWeekly 
+  const {
+    userEmail, title, description, date, start, end, location, category,
+    attendees, reminder, isAllDay, recurrence, recurrenceEnd, showAs,
+    priority, isOnline, meetingLink, attachments, repeatWeekly
   } = req.body;
-  
+
   const created_date = new Date().toISOString();
   const modified_date = created_date;
-  
+
   try {
     const result = await pool.query(
       `INSERT INTO calendar_events (
@@ -984,9 +984,9 @@ app.post("/events", async (req, res) => {
         is_online, meeting_link, attachments, repeat_weekly, created_date, modified_date
       ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21) RETURNING *`,
       [
-        userEmail, title, description, date, start, end, location, category || 'Work', 
-        attendees, reminder || 15, isAllDay ? 1 : 0, recurrence || 'none', recurrenceEnd, 
-        showAs || 'busy', priority || 'normal', isOnline ? 1 : 0, meetingLink, 
+        userEmail, title, description, date, start, end, location, category || 'Work',
+        attendees, reminder || 15, isAllDay ? 1 : 0, recurrence || 'none', recurrenceEnd,
+        showAs || 'busy', priority || 'normal', isOnline ? 1 : 0, meetingLink,
         attachments, repeatWeekly ? 1 : 0, created_date, modified_date
       ]
     );
@@ -998,14 +998,14 @@ app.post("/events", async (req, res) => {
 });
 
 app.put("/events/:id", async (req, res) => {
-  const { 
-    title, description, date, start, end, location, category, attendees, 
-    reminder, isAllDay, recurrence, recurrenceEnd, showAs, priority, 
-    isOnline, meetingLink, attachments, repeatWeekly 
+  const {
+    title, description, date, start, end, location, category, attendees,
+    reminder, isAllDay, recurrence, recurrenceEnd, showAs, priority,
+    isOnline, meetingLink, attachments, repeatWeekly
   } = req.body;
-  
+
   const modified_date = new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       `UPDATE calendar_events SET 
@@ -1016,9 +1016,9 @@ app.put("/events/:id", async (req, res) => {
         modified_date = $19
       WHERE id = $20`,
       [
-        title, description, date, start, end, location, category, attendees, 
-        reminder, isAllDay ? 1 : 0, recurrence, recurrenceEnd, showAs, priority, 
-        isOnline ? 1 : 0, meetingLink, attachments, repeatWeekly ? 1 : 0, 
+        title, description, date, start, end, location, category, attendees,
+        reminder, isAllDay ? 1 : 0, recurrence, recurrenceEnd, showAs, priority,
+        isOnline ? 1 : 0, meetingLink, attachments, repeatWeekly ? 1 : 0,
         modified_date, req.params.id
       ]
     );
@@ -1043,7 +1043,7 @@ app.delete("/events/:id", async (req, res) => {
 app.get("/calendar_events/:email", async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT * FROM calendar_events WHERE user_email = $1 ORDER BY event_date ASC", 
+      "SELECT * FROM calendar_events WHERE user_email = $1 ORDER BY event_date ASC",
       [req.params.email]
     );
     res.json(result.rows);
@@ -1056,7 +1056,7 @@ app.get("/calendar_events/:email", async (req, res) => {
 app.post("/calendar_events", async (req, res) => {
   const { user_email, title, description, event_date, start_time, end_time, repeat_weekly, created_date } = req.body;
   const date = created_date || new Date().toISOString();
-  
+
   try {
     const result = await pool.query(
       "INSERT INTO calendar_events (user_email, title, description, event_date, start_time, end_time, repeat_weekly, created_date) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *",
@@ -1100,13 +1100,13 @@ app.get("/profile/:email", async (req, res) => {
       "SELECT * FROM profiles WHERE user_email = $1",
       [req.params.email]
     );
-    
+
     if (result.rows.length === 0) {
       return res.json(null);
     }
-    
+
     const row = result.rows[0];
-    
+
     // Convert snake_case to camelCase for frontend
     const profile = {
       userEmail: row.user_email,
@@ -1131,7 +1131,7 @@ app.get("/profile/:email", async (req, res) => {
       skills: row.skills,
       outreachService: row.outreach_service
     };
-    
+
     res.json(profile);
   } catch (error) {
     console.error('Error fetching profile:', error);
@@ -1597,4 +1597,10 @@ process.on('uncaughtException', (error) => {
   console.error('Uncaught Exception:', error);
   process.exit(1);
 });
+
+
+
+
+
+
 
