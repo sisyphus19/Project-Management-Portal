@@ -1,1107 +1,543 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>UniDesk - Login</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    * {
-      margin: 0;
+    /* Page Specific Overrides for Login/Landing */
+    body {
+      display: block;
+      min-height: 100vh;
       padding: 0;
-      box-sizing: border-box;
+      font-family: var(--font-body);
+      color: var(--text-primary);
     }
 
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', sans-serif;
-      overflow-x: hidden;
-      background: #e8eef5;
+    .hero-section {
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      padding: 20px;
-    }
-
-    /* Main Container */
-    .login-container {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      width: 100%;
-      max-width: 950px;
-      min-height: 550px;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      overflow: hidden;
-      animation: slideIn 0.6s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Left Side - Image/Branding */
-    .login-left {
-      flex: 1;
-      background: #dfe7f2;
-      padding: 60px 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      align-items: flex-start;
-      position: relative;
-      overflow: hidden;
-      min-width: 400px;
-    }
-
-    .brand-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 40px;
-    }
-
-    .brand-logo {
-      width: 32px;
-      height: 32px;
-      background: #4a90e2;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    .brand-name {
-      font-size: 1.4rem;
-      font-weight: 600;
-      color: #2c3e50;
-    }
-
-    .brand-content {
-      text-align: left;
-      color: #2c3e50;
-      z-index: 1;
-      flex: 1;
-      display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      width: 100%;
+      text-align: center;
+      background: radial-gradient(circle at center, #F8F4EB 0%, #EFE9DB 100%);
+      padding: 0 20px;
+      position: relative;
+      overflow: hidden;
     }
 
-    .illustration {
-      width: 280px;
-      height: 280px;
-      margin: 0 auto 40px;
-      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjgwIiBoZWlnaHQ9IjI4MCIgdmlld0JveD0iMCAwIDI4MCAyODAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyODAiIGhlaWdodD0iMjgwIiBmaWxsPSJ0cmFuc3BhcmVudCIvPgo8IS0tIElzb21ldHJpYyBkYXNoYm9hcmQgaWxsdXN0cmF0aW9uIC0tPgo8ZyBvcGFjaXR5PSIwLjkiPgo8IS0tIEJhc2UgcGxhdGZvcm0gLS0+CjxwYXRoIGQ9Ik0xNDAgMjIwTDYwIDE3MFYxMDBMMTQwIDUwTDIyMCAxMDBWMTcwTDE0MCAyMjBaIiBmaWxsPSIjZmZmZmZmIiBzdHJva2U9IiNiZGMzYzkiIHN0cm9rZS13aWR0aD0iMiIvPgo8IS0tIENoYXJ0IGJhcnMgLS0+CjxyZWN0IHg9Ijg1IiB5PSIxMjAiIHdpZHRoPSIyMCIgaGVpZ2h0PSI0MCIgZmlsbD0iIzRhOTBlMiIgb3BhY2l0eT0iMC43Ii8+CjxyZWN0IHg9IjExNSIgeT0iMTAwIiB3aWR0aD0iMjAiIGhlaWdodD0iNjAiIGZpbGw9IiM1MGE4ZjUiIG9wYWNpdHk9IjAuNyIvPgo8cmVjdCB4PSIxNDUiIHk9Ijg1IiB3aWR0aD0iMjAiIGhlaWdodD0iNzUiIGZpbGw9IiM2NmJiZmYiIG9wYWNpdHk9IjAuNyIvPgo8cmVjdCB4PSIxNzUiIHk9IjExMCIgd2lkdGg9IjIwIiBoZWlnaHQ9IjUwIiBmaWxsPSIjNGE5MGUyIiBvcGFjaXR5PSIwLjciLz4KPC9nPgo8L3N2Zz4=') center/contain no-repeat;
+    .hero-content {
+      max-width: 800px;
+      z-index: 2;
+      animation: fadeUp 1s ease-out;
     }
 
-    .quote-text {
-      font-size: 1.1rem;
-      color: #2c3e50;
+    .hero-title {
+      font-family: var(--font-heading);
+      font-size: 5rem;
+      color: var(--text-primary);
+      /* Dark Evergreen */
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.1;
+      letter-spacing: -1px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.35rem;
+      color: var(--accent-tertiary);
+      /* Earthy Brown */
+      max-width: 600px;
+      margin: 0 auto var(--spacing-lg);
+      font-weight: 400;
       line-height: 1.6;
-      text-align: center;
-      margin-bottom: 15px;
-      font-weight: 500;
-      max-width: 350px;
     }
 
-    .quote-author {
-      font-size: 0.9rem;
-      color: #7f8c8d;
-      text-align: center;
+    .hero-image-abstract {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('https://images.unsplash.com/photo-1497215728101-856f4ea42174?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80');
+      background-size: cover;
+      background-position: center;
+      opacity: 0.04;
+      z-index: 1;
+      pointer-events: none;
     }
 
-    /* Right Side - Form */
-    .login-right {
-      flex: 1;
-      padding: 60px 50px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      min-width: 400px;
-      background: white;
-    }
-
-    .form-header {
-      margin-bottom: 35px;
-      text-align: center;
-    }
-
-    .form-header h2 {
-      font-size: 2rem;
-      color: #2c3e50;
-      margin-bottom: 10px;
-      font-weight: 600;
-    }
-
-    .form-header p {
-      color: #7f8c8d;
-      font-size: 0.95rem;
-    }
-
-    .tab-buttons {
-      display: flex;
-      gap: 0;
-      margin-bottom: 30px;
-      background: transparent;
-      padding: 0;
-      border-radius: 0;
-      border-bottom: 2px solid #e8eef5;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 12px 20px;
-      border: none;
-      background: transparent;
-      border-radius: 0;
-      cursor: pointer;
-      font-weight: 500;
-      color: #7f8c8d;
-      transition: all 0.3s;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px;
-      font-size: 0.95rem;
-    }
-
-    .tab-btn.active {
-      background: transparent;
-      color: #4a90e2;
-      box-shadow: none;
-      border-bottom: 3px solid #4a90e2;
-    }
-
-    .form-content {
+    /* --- Refined Auth Modal --- */
+    .auth-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(23, 58, 42, 0.6);
+      /* Evergreen Tint */
+      backdrop-filter: blur(4px);
+      z-index: 99;
       display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    .form-content.active {
+    .auth-overlay.active {
       display: block;
-      animation: fadeIn 0.4s ease-in;
+      opacity: 1;
     }
 
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+    .auth-modal {
+      background: #fff;
+      padding: 50px 40px;
+      border-radius: 4px;
+      /* Editorial square-ish look */
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 420px;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -48%) scale(0.98);
+      z-index: 100;
+      display: none;
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      border-top: 4px solid var(--accent-secondary);
     }
 
+    .auth-modal.active {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h2 {
+      font-family: var(--font-heading);
+      font-size: 2.2rem;
+      color: var(--accent-secondary);
+      margin-bottom: 8px;
+    }
+
+    .auth-header p {
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    /* Tabs */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: 30px;
+    }
+
+    .auth-tab {
+      flex: 1;
+      background: none;
+      border: none;
+      padding: 15px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 600;
+      color: #999;
+      cursor: pointer;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .auth-tab.active {
+      color: var(--accent-secondary);
+    }
+
+    .auth-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-secondary);
+    }
+
+    /* Forms */
     .form-group {
       margin-bottom: 20px;
     }
 
     .form-group label {
       display: block;
-      margin-bottom: 8px;
-      color: #2c3e50;
-      font-weight: 500;
-      font-size: 0.9rem;
-    }
-
-    .input-wrapper {
-      position: relative;
-    }
-
-    .input-icon {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 1.1rem;
-      color: #bdc3c9;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 13px 15px 13px 45px;
-      border: 1px solid #e0e6ed;
-      border-radius: 6px;
-      font-size: 0.95rem;
-      transition: all 0.3s;
-      background: white;
-      color: #2c3e50;
-    }
-
-    .form-group input::placeholder {
-      color: #bdc3c9;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #4a90e2;
-      background: white;
-      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
-    }
-
-    .remember-forgot {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin-bottom: 25px;
       font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
     }
 
-    .remember-me {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: #5a6c7d;
-    }
-
-    .remember-me input[type="checkbox"] {
-      width: 16px;
-      height: 16px;
-      cursor: pointer;
-    }
-
-    .submit-btn {
+    .input-wrapper input {
       width: 100%;
-      padding: 13px;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 2px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      background: #fafafa;
+    }
+
+    .input-wrapper input:focus {
+      outline: none;
+      border-color: var(--accent-secondary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(23, 58, 42, 0.05);
+      /* Focus ring */
+    }
+
+    .btn-auth {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent-secondary);
+      color: #fff;
       border: none;
-      border-radius: 6px;
-      background: #4a90e2;
-      color: white;
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: none;
-      margin-top: 0px;
+      transition: background 0.2s;
+      margin-top: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
 
-    .submit-btn:hover {
-      background: #357abd;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+    .btn-auth:hover {
+      background: #0f291e;
     }
 
-    .submit-btn:active {
-      transform: translateY(0);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.6;
+    .btn-auth:disabled {
+      opacity: 0.7;
       cursor: not-allowed;
-      transform: none;
     }
 
-    .signup-link {
-      text-align: center;
-      color: #7f8c8d;
+    .form-content {
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+
+    .form-content.active {
+      display: block;
+    }
+
+    /* Messages */
+    .msg-box {
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 4px;
       font-size: 0.9rem;
-      margin-top: 20px;
+      display: none;
     }
 
-    .signup-link a {
-      color: #4a90e2;
-      text-decoration: none;
-      font-weight: 600;
+    .msg-box.show {
+      display: block;
     }
 
-    .signup-link a:hover {
-      text-decoration: underline;
+    .msg-error {
+      background: #fee2e2;
+      color: #991b1b;
     }
 
-    .error-message {
-      color: #e53e3e;
-      font-size: 0.85rem;
+    .msg-success {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    .field-error {
+      color: #dc2626;
+      font-size: 0.8rem;
       margin-top: 5px;
       display: none;
     }
 
-    .error-message.show {
+    .field-error.show {
       display: block;
     }
 
-    .success-message {
-      background: #d1fae5;
-      color: #065f46;
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      display: none;
-      animation: slideDown 0.3s ease-out;
-    }
-
-    .success-message.show {
-      display: block;
-    }
-
-    @keyframes slideDown {
+    @keyframes fadeUp {
       from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(20px);
       }
+
       to {
         opacity: 1;
         transform: translateY(0);
       }
     }
 
-    .verification-notice {
-      background: #fef3c7;
-      border-left: 4px solid #f59e0b;
-      color: #92400e;
-      padding: 15px;
-      border-radius: 6px;
-      margin-bottom: 20px;
-      font-size: 0.9rem;
-      display: none;
-    }
-
-    .verification-notice.show {
-      display: block;
-      animation: slideDown 0.3s ease-out;
-    }
-
-    .resend-link {
-      color: #4a90e2;
-      text-decoration: underline;
-      cursor: pointer;
-      font-weight: 600;
-      margin-top: 8px;
-      display: inline-block;
-    }
-
-    .resend-link:hover {
-      color: #357abd;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 1024px) {
-      .login-container {
-        max-width: 850px;
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
       }
 
-      .login-left {
-        padding: 50px 40px;
-        min-width: 350px;
-      }
-
-      .login-right {
-        padding: 50px 40px;
-        min-width: 350px;
-      }
-
-      .illustration {
-        width: 240px;
-        height: 240px;
+      to {
+        opacity: 1;
       }
     }
 
-    @media (max-width: 968px) {
-      .login-container {
-        flex-direction: column;
-        max-width: 500px;
-        min-height: auto;
-      }
-
-      .login-left {
-        padding: 40px 30px;
-        min-height: auto;
-        min-width: unset;
-      }
-
-      .brand-header {
-        margin-bottom: 30px;
-      }
-
-      .illustration {
-        width: 200px;
-        height: 200px;
-        margin-bottom: 25px;
-      }
-
-      .quote-text {
-        font-size: 1rem;
-        max-width: 100%;
-      }
-
-      .quote-author {
-        font-size: 0.85rem;
-      }
-
-      .login-right {
-        padding: 40px 30px;
-        min-width: unset;
-      }
-
-      .form-header {
-        margin-bottom: 30px;
-      }
-
-      .form-header h2 {
-        font-size: 1.6rem;
-      }
-
-      .form-header p {
-        font-size: 0.9rem;
-      }
-    }
-
-    @media (max-width: 640px) {
-      body {
-        padding: 15px;
-      }
-
-      .login-container {
-        max-width: 100%;
-      }
-
-      .login-left {
-        padding: 35px 25px;
-      }
-
-      .brand-header {
-        margin-bottom: 25px;
-      }
-
-      .brand-logo {
-        width: 28px;
-        height: 28px;
-        font-size: 16px;
-      }
-
-      .brand-name {
-        font-size: 1.2rem;
-      }
-
-      .illustration {
-        width: 180px;
-        height: 180px;
-        margin-bottom: 20px;
-      }
-
-      .quote-text {
-        font-size: 0.95rem;
-      }
-
-      .login-right {
-        padding: 35px 25px;
-      }
-
-      .form-header h2 {
-        font-size: 1.5rem;
-      }
-
-      .tab-buttons {
-        margin-bottom: 25px;
-      }
-
-      .tab-btn {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-      }
-
-      .form-group {
-        margin-bottom: 18px;
-      }
-
-      .form-group input {
-        padding: 12px 12px 12px 40px;
-        font-size: 0.9rem;
-      }
-
-      .input-icon {
-        font-size: 1rem;
-        left: 12px;
-      }
-
-      .remember-forgot {
-        font-size: 0.8rem;
-        margin-bottom: 20px;
-      }
-
-      .submit-btn {
-        padding: 12px;
-        font-size: 0.95rem;
-      }
-
-      .signup-link {
-        font-size: 0.85rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-
-      .login-container {
-        border-radius: 8px;
-      }
-
-      .login-left {
-        padding: 30px 20px;
-      }
-
-      .brand-header {
-        margin-bottom: 20px;
-      }
-
-      .brand-logo {
-        width: 26px;
-        height: 26px;
-        font-size: 14px;
-      }
-
-      .brand-name {
-        font-size: 1.1rem;
-      }
-
-      .illustration {
-        width: 150px;
-        height: 150px;
-        margin-bottom: 20px;
-      }
-
-      .quote-text {
-        font-size: 0.9rem;
-        line-height: 1.5;
-      }
-
-      .quote-author {
-        font-size: 0.8rem;
-      }
-
-      .login-right {
-        padding: 30px 20px;
-      }
-
-      .form-header {
-        margin-bottom: 25px;
-      }
-
-      .form-header h2 {
-        font-size: 1.4rem;
-        margin-bottom: 8px;
-      }
-
-      .form-header p {
-        font-size: 0.85rem;
-      }
-
-      .tab-buttons {
-        margin-bottom: 20px;
-      }
-
-      .tab-btn {
-        padding: 10px 12px;
-        font-size: 0.85rem;
-      }
-
-      .form-group {
-        margin-bottom: 16px;
-      }
-
-      .form-group label {
-        font-size: 0.85rem;
-        margin-bottom: 6px;
-      }
-
-      .form-group input {
-        padding: 11px 10px 11px 38px;
-        font-size: 0.85rem;
-      }
-
-      .input-icon {
-        font-size: 0.95rem;
-        left: 11px;
-      }
-
-      .remember-forgot {
-        font-size: 0.75rem;
-        margin-bottom: 18px;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .remember-me input[type="checkbox"] {
-        width: 14px;
-        height: 14px;
-      }
-
-      .submit-btn {
-        padding: 11px;
-        font-size: 0.9rem;
-      }
-
-      .signup-link {
-        font-size: 0.8rem;
-      }
-
-      .success-message,
-      .verification-notice {
-        padding: 10px;
-        font-size: 0.85rem;
-        margin-bottom: 15px;
-      }
-
-      .error-message {
-        font-size: 0.8rem;
-      }
-    }
-
-    @media (max-width: 360px) {
-      body {
-        padding: 8px;
-      }
-
-      .login-left {
-        padding: 25px 15px;
-      }
-
-      .illustration {
-        width: 130px;
-        height: 130px;
-        margin-bottom: 15px;
-      }
-
-      .quote-text {
-        font-size: 0.85rem;
-      }
-
-      .login-right {
-        padding: 25px 15px;
-      }
-
-      .form-header h2 {
-        font-size: 1.3rem;
-      }
-
-      .form-group input {
-        padding: 10px 8px 10px 36px;
-        font-size: 0.8rem;
-      }
-
-      .input-icon {
-        font-size: 0.9rem;
-        left: 10px;
-      }
-    }
-
-    /* Landscape orientation on mobile */
-    @media (max-width: 968px) and (orientation: landscape) {
-      .login-container {
-        flex-direction: row;
-        max-width: 100%;
-      }
-
-      .login-left {
-        min-width: 300px;
-        padding: 30px 25px;
-      }
-
-      .illustration {
-        width: 140px;
-        height: 140px;
-        margin-bottom: 15px;
-      }
-
-      .quote-text {
-        font-size: 0.85rem;
-      }
-
-      .quote-author {
-        font-size: 0.75rem;
-      }
-
-      .login-right {
-        padding: 30px 25px;
-        overflow-y: auto;
-        max-height: 90vh;
-      }
-
-      .form-header h2 {
-        font-size: 1.4rem;
-      }
-
-      .form-group {
-        margin-bottom: 14px;
-      }
-
+    .main-nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 30px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 10;
     }
   </style>
 </head>
+
 <body>
-  <!-- Main Login Container -->
-  <div class="login-container">
-    <!-- Left Side - Branding -->
-    <div class="login-left">
-      <div class="brand-header">
-        <div class="brand-logo">≋</div>
-        <div class="brand-name">UniDesk</div>
-      </div>
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <div class="brand-logo">UniDesk</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a></li>
+      <li><a href="profile.html" class="nav-link">Team</a></li>
+      <li><a href="#" class="nav-link">Reports</a></li>
+      <li><a href="#" class="nav-link" id="navLoginBtn">Account</a></li>
+    </ul>
+  </nav>
 
-      <div class="brand-content">
-        <div class="illustration"></div>
-        
-        <div class="quote-text">
-          "The key is not to prioritize what's on your schedule, but to schedule your priorities."
+  <!-- Hero Section -->
+  <header class="hero-section">
+    <div class="hero-image-abstract"></div>
+    <div class="hero-content">
+      <h1 class="hero-title">Project Tasks Reimagined</h1>
+      <p class="hero-subtitle">Experience a new standard in project management. Elegant, intuitive, and designed for
+        clarity.</p>
+      <button class="btn" id="startProjectBtn">Start New Project</button>
+    </div>
+  </header>
+
+  <!-- Auth Overlay Background -->
+  <div class="auth-overlay" id="authOverlay" onclick="closeModal()"></div>
+
+  <!-- Login/Auth Modal -->
+  <div class="auth-modal" id="authModal">
+    <div class="auth-header">
+      <h2 id="modalTitle">Welcome Back</h2>
+      <p id="modalSubtitle">Please login to your account</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Login</button>
+      <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Messages -->
+    <div class="msg-box msg-success" id="successMsg"></div>
+    <div class="msg-box msg-error" id="errorMsg"></div>
+
+    <!-- Login Form -->
+    <form class="form-content active" id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <input type="email" id="loginEmail" placeholder="name@company.com" required>
         </div>
-        <div class="quote-author">- Stephen Covey</div>
+        <div class="field-error" id="loginEmailError">Invalid email address</div>
       </div>
-    </div>
-
-    <!-- Right Side - Login Form -->
-    <div class="login-right">
-      <div class="form-header">
-        <h2>Welcome Back</h2>
-        <p>Login to continue to your dashboard.</p>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="loginPassword" placeholder="••••••••" required>
+        </div>
       </div>
+      <button type="submit" class="btn-auth" id="loginBtn">Login</button>
+      <!-- Optional: Forgot Password Link could go here -->
+    </form>
 
-      <!-- Success Message -->
-      <div class="success-message" id="successMessage"></div>
-
-      <!-- Verification Notice -->
-      <div class="verification-notice" id="verificationNotice">
-        <strong>📧 Email Verification Required</strong>
-        <p id="verificationText"></p>
-        <span class="resend-link" id="resendLink" onclick="resendVerification()">Resend verification email</span>
+    <!-- Signup Form -->
+    <form class="form-content" id="signupForm" onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <div class="input-wrapper">
+          <input type="text" id="signupName" placeholder="John Doe" required>
+        </div>
       </div>
-
-      <!-- Tab Buttons -->
-      <div class="tab-buttons">
-        <button class="tab-btn active" onclick="switchTab('login')">Login</button>
-        <button class="tab-btn" onclick="switchTab('signup')">Sign Up</button>
+      <div class="form-group">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <input type="email" id="signupEmail" placeholder="name@company.com" required>
+        </div>
+        <div class="field-error" id="signupEmailError">Invalid email address</div>
       </div>
-
-      <!-- Login Form -->
-      <div class="form-content active" id="loginForm">
-        <form onsubmit="handleLogin(event)">
-          <div class="form-group">
-            <label>Email Address</label>
-            <div class="input-wrapper">
-              <span class="input-icon">✉</span>
-              <input type="email" id="loginEmail" placeholder="Enter your email" required>
-            </div>
-            <div class="error-message" id="loginEmailError">Please enter a valid email</div>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="loginPassword" placeholder="Enter your password" required>
-            </div>
-            <div class="error-message" id="loginPasswordError">Password must be at least 6 characters</div>
-          </div>
-
-          <!-- <div class="remember-forgot">
-            <label class="remember-me">
-              <input type="checkbox" id="rememberMe">
-              <span>Remember me</span>
-            </label>
-            <a href="#" class="forgot-link">Forgot your password?</a>
-          </div> -->
-
-          <button type="submit" class="submit-btn" id="loginBtn">Login</button>
-
-          <!-- <div class="social-divider">Or continue with</div>
-
-          <div class="social-buttons">
-            <button type="button" class="social-btn">
-              <span style="color: #db4437;">G</span> Google
-            </button>
-            <button type="button" class="social-btn">
-              <span style="color: #333;">⚉</span> GitHub
-            </button>
-          </div> -->
-
-          <div class="signup-link">
-            Don't have an account? <a href="#" onclick="switchTab('signup'); return false;">Sign Up</a>
-          </div>
-        </form>
+      <div class="form-group">
+        <label>Password</label>
+        <div class="input-wrapper">
+          <input type="password" id="signupPassword" placeholder="Min. 6 characters" required>
+        </div>
+        <div class="field-error" id="signupPasswordError">Must be at least 6 characters</div>
       </div>
-
-      <!-- Signup Form -->
-      <div class="form-content" id="signupForm">
-        <form onsubmit="handleSignup(event)">
-          <div class="form-group">
-            <label>Full Name</label>
-            <div class="input-wrapper">
-              <span class="input-icon">👤</span>
-              <input type="text" id="signupName" placeholder="Enter your full name" required>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label>Email Address</label>
-            <div class="input-wrapper">
-              <span class="input-icon">✉</span>
-              <input type="email" id="signupEmail" placeholder="Enter your email" required>
-            </div>
-            <div class="error-message" id="signupEmailError">Please enter a valid email</div>
-          </div>
-
-          <div class="form-group">
-            <label>Password</label>
-            <div class="input-wrapper">
-              <span class="input-icon">🔒</span>
-              <input type="password" id="signupPassword" placeholder="Create a password (min 6 characters)" required>
-            </div>
-            <div class="error-message" id="signupPasswordError">Password must be at least 6 characters</div>
-          </div>
-
-          <button type="submit" class="submit-btn" id="signupBtn">Create Account</button>
-
-          <!-- <div class="social-divider">Or continue with</div>
-
-          <div class="social-buttons">
-            <button type="button" class="social-btn">
-              <span style="color: #db4437;">G</span> Google
-            </button>
-            <button type="button" class="social-btn">
-              <span style="color: #333;">⚉</span> GitHub
-            </button>
-          </div> -->
-
-          <div class="signup-link">
-            Already have an account? <a href="#" onclick="switchTab('login'); return false;">Login</a>
-          </div>
-        </form>
-      </div>
-    </div>
+      <button type="submit" class="btn-auth" id="signupBtn">Create Account</button>
+    </form>
   </div>
 
+  <!-- Modal Logic Script -->
   <script>
+    // --- UI Logic ---
+    const authModal = document.getElementById('authModal');
+    const authOverlay = document.getElementById('authOverlay');
+    const startProjectBtn = document.getElementById('startProjectBtn');
+    const navLoginBtn = document.getElementById('navLoginBtn');
+
+    // Title Elements
+    const modalTitle = document.getElementById('modalTitle');
+    const modalSubtitle = document.getElementById('modalSubtitle');
+
+    function openModal() {
+      authModal.classList.add('active');
+      authOverlay.classList.add('active');
+    }
+
+    function closeModal() {
+      authModal.classList.remove('active');
+      authOverlay.classList.remove('active');
+      // optional: reset forms
+    }
+
+    if (startProjectBtn) startProjectBtn.addEventListener('click', (e) => { e.stopPropagation(); openModal(); });
+    if (navLoginBtn) navLoginBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); openModal(); });
+
+    // --- Auth Logic ---
     const API_BASE = window.location.origin;
-    let pendingVerificationEmail = null;
 
     function switchTab(tab) {
-      const tabs = document.querySelectorAll('.tab-btn');
-      const forms = document.querySelectorAll('.form-content');
-      
-      // Hide messages when switching tabs
-      hideMessage('successMessage');
-      hideMessage('verificationNotice');
-      
-      tabs.forEach(t => t.classList.remove('active'));
-      forms.forEach(f => f.classList.remove('active'));
-      
+      const loginTab = document.getElementById('tabLogin');
+      const signupTab = document.getElementById('tabSignup');
+      const loginForm = document.getElementById('loginForm');
+      const signupForm = document.getElementById('signupForm');
+
+      // Reset Messages
+      document.querySelectorAll('.msg-box').forEach(el => el.classList.remove('show'));
+
       if (tab === 'login') {
-        tabs[0].classList.add('active');
-        document.getElementById('loginForm').classList.add('active');
+        loginTab.classList.add('active');
+        signupTab.classList.remove('active');
+        loginForm.classList.add('active');
+        signupForm.classList.remove('active');
+
+        modalTitle.textContent = "Welcome Back";
+        modalSubtitle.textContent = "Login to access your dashboard";
       } else {
-        tabs[1].classList.add('active');
-        document.getElementById('signupForm').classList.add('active');
+        signupTab.classList.add('active');
+        loginTab.classList.remove('active');
+        signupForm.classList.add('active');
+        loginForm.classList.remove('active');
+
+        modalTitle.textContent = "Join UniDesk";
+        modalSubtitle.textContent = "Create an account to start managing";
       }
     }
 
-    function showMessage(elementId, message, isError = false) {
-      const el = document.getElementById(elementId);
-      if (el) {
-        el.textContent = message;
-        el.innerHTML = message; // Allow HTML
-        el.classList.add('show');
-      }
+    function showMsg(type, html) {
+      const el = document.getElementById(type === 'success' ? 'successMsg' : 'errorMsg');
+      el.innerHTML = html;
+      el.classList.add('show');
+      setTimeout(() => { if (type === 'error') el.classList.remove('show'); }, 5000);
     }
 
-    function hideMessage(elementId) {
-      const el = document.getElementById(elementId);
-      if (el) {
-        el.classList.remove('show');
-      }
+    function hideMsgs() {
+      document.querySelectorAll('.msg-box').forEach(el => el.classList.remove('show'));
     }
 
     async function handleLogin(e) {
       e.preventDefault();
-      
+      hideMsgs();
+
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
-      const loginBtn = document.getElementById('loginBtn');
+      const btn = document.getElementById('loginBtn');
 
-      if (!validateEmail(email)) {
-        showError('loginEmailError');
-        return;
-      }
+      // Validations
+      if (!validateEmail(email)) { return showFieldErr('loginEmailError'); }
 
-      if (password.length < 6) {
-        showError('loginPasswordError');
-        return;
-      }
+      btn.disabled = true; btn.textContent = 'Verifying...';
 
       try {
-        loginBtn.disabled = true;
-        loginBtn.textContent = 'Logging in...';
-
-        const response = await fetch(`${API_BASE}/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(`${API_BASE}/login`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ email, password })
         });
+        const data = await res.json();
 
-        const data = await response.json();
-
-        if (response.ok && data.success) {
+        if (res.ok && data.success) {
           sessionStorage.setItem('isLoggedIn', 'true');
           sessionStorage.setItem('userEmail', email);
-          showMessage('successMessage', '✅ Login successful!');
-          setTimeout(() => {
-            window.location.href = 'dashboard.html';
-          }, 1000);
-        } else if (data.needsVerification) {
-          // Show verification notice
-          pendingVerificationEmail = email;
-          document.getElementById('verificationText').innerHTML = 
-            `Your email is not verified yet. Please check your inbox (${email}) for the verification link.`;
-          showMessage('verificationNotice', '');
-          loginBtn.disabled = false;
-          loginBtn.textContent = 'Login';
+          showMsg('success', 'Logged in successfully!');
+          setTimeout(() => window.location.href = 'dashboard.html', 800);
         } else {
-          alert(data.message || 'Invalid credentials');
-          loginBtn.disabled = false;
-          loginBtn.textContent = 'Login';
+          showMsg('error', data.message || 'Invalid credentials');
         }
-      } catch (error) {
-        console.error('Login error:', error);
-        alert('Login failed. Please try again.');
-        loginBtn.disabled = false;
-        loginBtn.textContent = 'Login';
+      } catch (err) {
+        showMsg('error', 'Connection failed. Try again.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Login';
       }
     }
 
     async function handleSignup(e) {
       e.preventDefault();
-      
+      hideMsgs();
+
       const name = document.getElementById('signupName').value.trim();
       const email = document.getElementById('signupEmail').value.trim();
       const password = document.getElementById('signupPassword').value;
-      const signupBtn = document.getElementById('signupBtn');
+      const btn = document.getElementById('signupBtn');
 
-      if (!validateEmail(email)) {
-        showError('signupEmailError');
-        return;
-      }
+      if (!validateEmail(email)) { return showFieldErr('signupEmailError'); }
+      if (password.length < 6) { return showFieldErr('signupPasswordError'); }
 
-      if (password.length < 6) {
-        showError('signupPasswordError');
-        return;
-      }
+      btn.disabled = true; btn.textContent = 'Creating...';
 
       try {
-        signupBtn.disabled = true;
-        signupBtn.textContent = 'Creating Account...';
-
-        const response = await fetch(`${API_BASE}/register`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const res = await fetch(`${API_BASE}/register`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ name, email, password })
         });
+        const data = await res.json();
 
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          // Show success message
-          showMessage('successMessage', 
-            `🎉 Account created successfully!<br>📧 Please check your email (${email}) to verify your account.`
-          );
-          
-          // Switch to login tab after 3 seconds
+        if (res.ok && data.success) {
+          showMsg('success', 'Account created! Switching to login...');
           setTimeout(() => {
             switchTab('login');
             document.getElementById('loginEmail').value = email;
-            hideMessage('successMessage');
-          }, 4000);
-          
-          signupBtn.disabled = false;
-          signupBtn.textContent = 'Create Account';
+          }, 1500);
         } else {
-          alert(data.message || 'Registration failed');
-          signupBtn.disabled = false;
-          signupBtn.textContent = 'Create Account';
+          showMsg('error', data.message || 'Registration failed');
         }
-      } catch (error) {
-        console.error('Signup error:', error);
-        alert('Signup failed. Please try again.');
-        signupBtn.disabled = false;
-        signupBtn.textContent = 'Create Account';
+      } catch (err) {
+        showMsg('error', 'Connection failed. Try again.');
+      } finally {
+        btn.disabled = false; btn.textContent = 'Create Account';
       }
     }
 
-    async function resendVerification() {
-      const email = pendingVerificationEmail || document.getElementById('loginEmail').value.trim();
-      
-      if (!email) {
-        alert('Please enter your email address');
-        return;
-      }
-
-      try {
-        const resendLink = document.getElementById('resendLink');
-        resendLink.textContent = 'Sending...';
-        resendLink.style.pointerEvents = 'none';
-
-        const response = await fetch(`${API_BASE}/resend-verification`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email })
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          alert('✅ Verification email sent! Please check your inbox.');
-          resendLink.textContent = 'Email sent! Check your inbox';
-        } else {
-          alert(data.message || 'Failed to resend verification email');
-          resendLink.textContent = 'Resend verification email';
-          resendLink.style.pointerEvents = 'auto';
-        }
-      } catch (error) {
-        console.error('Resend error:', error);
-        alert('Failed to resend verification email. Please try again.');
-        const resendLink = document.getElementById('resendLink');
-        resendLink.textContent = 'Resend verification email';
-        resendLink.style.pointerEvents = 'auto';
-      }
-    }
-
-    function validateEmail(email) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-    }
-
-    function showError(errorId) {
-      const errorEl = document.getElementById(errorId);
-      errorEl.classList.add('show');
-      setTimeout(() => errorEl.classList.remove('show'), 3000);
-    }
-
-    // Hide errors on input
-    document.querySelectorAll('input').forEach(input => {
-      input.addEventListener('input', function() {
-        const errorId = this.id + 'Error';
-        const errorEl = document.getElementById(errorId);
-        if (errorEl) errorEl.classList.remove('show');
-      });
-    });
-
-    // Check if coming from verification
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('verified') === 'true') {
-      showMessage('successMessage', '✅ Email verified successfully! You can now log in.');
+    function validateEmail(e) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e); }
+    function showFieldErr(id) {
+      const el = document.getElementById(id);
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
     }
   </script>
 </body>
+
 </html>
-
-

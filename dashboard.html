@@ -1,248 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <title>Dashboard - UniDesk</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root{
-      --accent:#4a90e2;
-      --accent-2:#4f46e5;
-      --bg:#f8f9fc;
-      --card:#ffffff;
-      --muted:#64748b;
-      --text-primary:#0f172a;
-      --text-secondary:#475569;
-      --sidebar-bg:#ffffff;
-      --border:#e2e8f0;
-    }
-   
-    * {
-      box-sizing: border-box;
-    }
+    /* Dashboard specific overrides */
 
-    body {
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-      display: flex;
-      height: 100vh;
-      background: var(--bg);
-      color: var(--text-primary);
-    }
-   
-    .sidebar {
-      width: 240px;
-      background: var(--sidebar-bg);
-      color: var(--text-primary);
-      padding: 24px 0;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 1px 0 0 var(--border);
-      position: relative;
-    }
-
-    .sidebar-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 0 24px;
-      margin-bottom: 32px;
-    }
-
-    .sidebar-logo-icon {
-      width: 32px;
-      height: 32px;
-      background: #4a90e2;
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 700;
-      font-size: 18px;
-    }
-
-    .sidebar-logo-text {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      flex: 1;
-    }
-
-    .sidebar li {
-      margin: 4px 16px;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.938rem;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s;
-      color: var(--text-secondary);
-    }
-
-    .sidebar li:hover {
-      background: #f1f5f9;
-      color: var(--text-primary);
-    }
-
-    .sidebar li.active {
-      background: #eef2ff;
-      color: var(--accent);
-    }
-
-    .sidebar li::before {
-      content: '';
-      width: 20px;
-      height: 20px;
-      display: inline-block;
-      opacity: 0.8;
-    }
-
-    #menu-dashboard::before { content: '📊'; }
-    #menu-calendar::before { content: '📅'; }
-    #menu-profile::before { content: '👤'; }
-    #menu-aboutus::before { content: 'ℹ️'; }
-    #logout::before { content: '🚪'; }
-
-    #logout {
-      margin-top: auto;
-      color: #ef4444;
-      font-weight: 500;
-    }
-
-    #logout:hover {
-      background: #fef2f2;
-    }
-
-    .main {
-      flex: 1;
-      padding: 40px;
-      background: var(--bg);
-      overflow-y: auto;
-    }
-
-    .top-bar {
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-      margin-bottom: 32px;
+    .dashboard-header {
+      margin: var(--spacing-xl) 0 var(--spacing-lg);
+      text-align: center;
+      animation: fadeIn 0.6s ease-out;
     }
 
     .welcome-text {
-      font-size: 1.5rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
       color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      margin-bottom: var(--spacing-xs);
     }
 
-    .dashboard-header {
-      margin-bottom: 32px;
-    }
-
-    .dashboard-header h1 {
-      font-size: 1.125rem;
-      color: var(--text-primary);
-      margin: 0;
-      font-weight: 600;
-      margin-bottom: 24px;
+    .date-display {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      font-style: italic;
     }
 
     .dashboard-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 24px;
-      max-width: 100%;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+      animation: fadeIn 0.8s ease-out;
     }
 
+    /* Tile enhancements */
     .dashboard-tile {
-      background: var(--card);
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
       cursor: pointer;
-      transition: all 0.3s;
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      min-height: 260px;
       display: flex;
       flex-direction: column;
+      height: 100%;
+      background: #FFFFFF;
+      border: 1px solid #E0DCCD;
+      transition: all 0.4s ease;
     }
 
     .dashboard-tile:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
-      border-color: rgba(99,102,241,0.2);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+      border-color: var(--accent-primary);
     }
 
     .tile-header {
-      display: flex;
-      justify-content: flex-start;
-      align-items: flex-start;
-      margin-bottom: 20px;
-    }
-
-    .tile-title-section {
-      flex: 1;
-    }
-
-    .tile-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
+      margin-bottom: var(--spacing-md);
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: var(--spacing-sm);
       display: flex;
       align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      margin-bottom: 12px;
+      gap: 10px;
     }
 
     .tile-title {
-      font-size: 1.125rem;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin: 0 0 8px 0;
-    }
-
-    .tile-description {
-      font-size: 0.813rem;
-      color: var(--text-secondary);
-      line-height: 1.5;
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
       margin: 0;
+      color: var(--text-primary);
     }
 
-    .tile-action-icon {
-      display: none;
+    .tile-icon {
+      font-size: 1.2rem;
+      color: var(--accent-primary);
     }
 
     .tile-content {
-      color: var(--text-secondary);
-      line-height: 1.6;
       flex: 1;
-      font-size: 0.875rem;
+      min-height: 150px;
     }
 
     .tile-item {
-      background: transparent;
-      padding: 12px 0;
-      border-bottom: 1px solid #f1f5f9;
-      margin-bottom: 0;
-      border-left: none;
-      font-size: 0.875rem;
+      padding: 10px 0;
+      border-bottom: 1px solid #f9f9f9;
+      font-size: 0.95rem;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
-      gap: 8px;
-      color: var(--text-primary);
     }
 
     .tile-item:last-child {
@@ -250,485 +92,345 @@
     }
 
     .tile-item::before {
-      content: '';
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent);
-      flex-shrink: 0;
+      content: '•';
+      color: var(--accent-secondary);
+      margin-right: 8px;
+      font-size: 1.2em;
     }
 
     .tile-footer {
-      margin-top: auto;
-      padding-top: 16px;
+      margin-top: var(--spacing-md);
     }
 
     .tile-button {
       width: 100%;
-      padding: 10px;
-      border: none;
+      text-align: center;
+      color: var(--accent-primary);
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
       background: transparent;
-      color: var(--accent);
-      font-weight: 600;
-      font-size: 0.875rem;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      border: 1px solid rgba(27, 63, 45, 0.2);
+      padding: 10px;
+      transition: var(--transition-smooth);
+      border-radius: 4px;
     }
 
     .tile-button:hover {
-      background: #eef2ff;
+      background: var(--accent-primary);
+      color: #fff;
+      border-color: var(--accent-primary);
     }
 
-    /* Tile-specific colors */
-    .projects .tile-icon { background: #eef2ff; color: #6366f1; }
-    .projects .tile-action-icon { background: #eef2ff; color: #6366f1; }
-    
-    .ideas .tile-icon { background: #fef3c7; color: #f59e0b; }
-    .ideas .tile-action-icon { background: #fef3c7; color: #f59e0b; }
-    
-    .notes .tile-icon { background: #d1fae5; color: #10b981; }
-    .notes .tile-action-icon { background: #d1fae5; color: #10b981; }
-    
-    .deadlines .tile-icon { background: #fee2e2; color: #ef4444; }
-    .deadlines .tile-action-icon { background: #fee2e2; color: #ef4444; }
-    
-    .future .tile-icon { background: #dbeafe; color: #3b82f6; }
-    .future .tile-action-icon { background: #dbeafe; color: #3b82f6; }
-    
-    .career .tile-icon { background: #f3e8ff; color: #a855f7; }
-    .career .tile-action-icon { background: #f3e8ff; color: #a855f7; }
-
-    .progress-section {
-      margin-top: 16px;
-    }
-
-    .progress-item {
-      margin-bottom: 12px;
-    }
-
-    .progress-item:last-child {
-      margin-bottom: 0;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 6px;
-      font-size: 0.813rem;
-    }
-
-    .progress-title {
-      color: var(--text-primary);
-      font-weight: 500;
-    }
-
-    .progress-percent {
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-
-    .progress-bar-container {
-      width: 100%;
-      height: 6px;
-      background: #f1f5f9;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-
-    .progress-bar {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.3s;
-    }
-
-    .career .progress-bar {
-      background: linear-gradient(90deg, #a855f7, #c084fc);
-    }
-
+    /* Loading/Empty states */
+    .loading,
     .empty-state {
-      text-align: center;
       color: var(--text-secondary);
       font-style: italic;
-      margin-top: 20px;
-      font-size: 0.875rem;
-    }
-
-    .loading {
       text-align: center;
-      color: var(--text-secondary);
-      font-style: italic;
-      margin: 20px 0;
-      font-size: 0.875rem;
+      padding: 20px 0;
+      font-size: 0.9rem;
     }
 
     .error {
-      color: #ef4444;
+      color: #d32f2f;
       text-align: center;
-      font-size: 0.875rem;
-      margin: 10px 0;
+      font-size: 0.9rem;
     }
 
-    .item-count-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 2px 8px;
-      background: #f1f5f9;
-      color: var(--text-secondary);
-      border-radius: 12px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      margin-left: auto;
-    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
 
-    @media (max-width: 1200px) {
-      .dashboard-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 768px) {
-      .dashboard-grid {
-        grid-template-columns: 1fr;
-      }
-      .sidebar {
-        width: 200px;
-      }
-      .main {
-        padding: 24px;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
     }
   </style>
 </head>
+
 <body>
-  <div class="sidebar">
-    <div class="sidebar-logo">
-      <div class="sidebar-logo-icon">≋</div>
-      <div class="sidebar-logo-text">UniDesk</div>
-    </div>
-    <ul>
-      <li id="menu-dashboard" class="active">Dashboard</li>
-      <li id="menu-calendar">Calendar</li>
-      <li id="menu-profile">Profile</li>
-      <li id="menu-aboutus">About Us</li>
-      <li id="logout">Logout</li>
+  <!-- Navigation -->
+  <nav class="main-nav">
+    <div class="brand-logo">UniDesk</div>
+    <ul class="nav-links">
+      <li><a href="dashboard.html" class="nav-link"
+          style="border-bottom: 1px solid var(--accent-secondary);">Dashboard</a></li>
+      <li><a href="projects.html" class="nav-link">Projects</a></li>
+      <li><a href="profile.html" class="nav-link">Team</a></li>
+      <li><a href="#" class="nav-link">Reports</a></li>
+      <li><a href="#" class="nav-link" id="logoutBtn">Logout</a></li>
     </ul>
-  </div>
+  </nav>
 
-  <div class="main">
-    <div class="top-bar">
-      <div class="welcome-text">
-        Welcome back!
+  <div class="container">
+    <header class="dashboard-header">
+      <h1 class="welcome-text">Overview</h1>
+      <p class="date-display" id="currentDate"></p>
+    </header>
+
+    <div class="dashboard-grid">
+      <!-- Projects -->
+      <div class="card dashboard-tile projects" data-tile="projects">
+        <div class="tile-header">
+          <div class="tile-icon">🚀</div>
+          <h3 class="tile-title">Projects</h3>
+        </div>
+        <div class="tile-content" id="projects-content">
+          <div class="loading">Loading...</div>
+        </div>
+        <div class="tile-footer">
+          <button class="tile-button">View All</button>
+        </div>
       </div>
-    </div>
 
-    <div id="dashboardView">
-      <div class="dashboard-grid">
-        <!-- Projects Tile -->
-        <div class="dashboard-tile projects" data-tile="projects">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">🚀</div>
-              <h3 class="tile-title">Your Projects</h3>
-              <p class="tile-description">Manage all your projects in one centralized hub. Track members, view details, and monitor progress.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="projects-content">
-            <div class="loading">Loading projects...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">View All Projects →</button>
-          </div>
+      <!-- Ideas -->
+      <div class="card dashboard-tile ideas" data-tile="ideas">
+        <div class="tile-header">
+          <div class="tile-icon">💡</div>
+          <h3 class="tile-title">Ideas</h3>
         </div>
-
-        <!-- Ideas Tile -->
-        <div class="dashboard-tile ideas" data-tile="ideas">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">💡</div>
-              <h3 class="tile-title">Recent Ideas</h3>
-              <p class="tile-description">Capture and organize your brilliant ideas. Never lose a creative thought again.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="ideas-content">
-            <div class="loading">Loading ideas...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">Manage Ideas →</button>
-          </div>
+        <div class="tile-content" id="ideas-content">
+          <div class="loading">Loading...</div>
         </div>
-
-        <!-- Notes Tile -->
-        <div class="dashboard-tile notes" data-tile="notes">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">📝</div>
-              <h3 class="tile-title">Quick Notes</h3>
-              <p class="tile-description">Take quick notes on the fly and access them instantly whenever you need them.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="notes-content">
-            <div class="loading">Loading notes...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">Save Note →</button>
-          </div>
+        <div class="tile-footer">
+          <button class="tile-button">Manage</button>
         </div>
+      </div>
 
-        <!-- Deadlines Tile -->
-        <div class="dashboard-tile deadlines" data-tile="deadlines">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">⏰</div>
-              <h3 class="tile-title">Deadlines</h3>
-              <p class="tile-description">Stay on top of all your deadlines with smart notifications and visual tracking.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="deadlines-content">
-            <div class="loading">Loading deadlines...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">View Deadlines →</button>
-          </div>
+      <!-- Notes -->
+      <div class="card dashboard-tile notes" data-tile="notes">
+        <div class="tile-header">
+          <div class="tile-icon">📝</div>
+          <h3 class="tile-title">Notes</h3>
         </div>
-
-        <!-- Future Work Tile -->
-        <div class="dashboard-tile future" data-tile="future">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">🔮</div>
-              <h3 class="tile-title">Future Work</h3>
-              <p class="tile-description">Plan and organize your future work ideas, upcoming tasks, and long-term projects.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="future-content">
-            <div class="loading">Loading future work...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">Plan Future →</button>
-          </div>
+        <div class="tile-content" id="notes-content">
+          <div class="loading">Loading...</div>
         </div>
+        <div class="tile-footer">
+          <button class="tile-button">Save Note</button>
+        </div>
+      </div>
 
-        <!-- Career Tile -->
-        <div class="dashboard-tile career" data-tile="career">
-          <div class="tile-header">
-            <div class="tile-title-section">
-              <div class="tile-icon">🎯</div>
-              <h3 class="tile-title">Career & Goals</h3>
-              <p class="tile-description">Set, track, and achieve your career aspirations and personal goals.</p>
-            </div>
-          </div>
-          <div class="tile-content" id="career-content">
-            <div class="loading">Loading goals...</div>
-          </div>
-          <div class="tile-footer">
-            <button class="tile-button">Track Goals →</button>
-          </div>
+      <!-- Deadlines -->
+      <div class="card dashboard-tile deadlines" data-tile="deadlines">
+        <div class="tile-header">
+          <div class="tile-icon">⏰</div>
+          <h3 class="tile-title">Deadlines</h3>
+        </div>
+        <div class="tile-content" id="deadlines-content">
+          <div class="loading">Loading...</div>
+        </div>
+        <div class="tile-footer">
+          <button class="tile-button">View All</button>
+        </div>
+      </div>
+
+      <!-- Future -->
+      <div class="card dashboard-tile future" data-tile="future">
+        <div class="tile-header">
+          <div class="tile-icon">🔮</div>
+          <h3 class="tile-title">Future</h3>
+        </div>
+        <div class="tile-content" id="future-content">
+          <div class="loading">Loading...</div>
+        </div>
+        <div class="tile-footer">
+          <button class="tile-button">Plan</button>
+        </div>
+      </div>
+
+      <!-- Career -->
+      <div class="card dashboard-tile career" data-tile="career">
+        <div class="tile-header">
+          <div class="tile-icon">🎯</div>
+          <h3 class="tile-title">Goals</h3>
+        </div>
+        <div class="tile-content" id="career-content">
+          <div class="loading">Loading...</div>
+        </div>
+        <div class="tile-footer">
+          <button class="tile-button">Track</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-  // ===================== API CONFIGURATION =====================
-  const API_BASE = window.location.origin;
+    // ===================== API CONFIGURATION =====================
+    const API_BASE = window.location.origin;
 
-  // ===================== AUTHENTICATION =====================
-  function getCurrentUser() {
-    return sessionStorage.getItem('userEmail');
-  }
-
-  function isUserLoggedIn() {
-    return sessionStorage.getItem('isLoggedIn') === 'true';
-  }
-
-  function redirectToLogin() {
-    alert('Please log in to access this page');
-    window.location.href = '/';
-  }
-
-  // Check authentication
-  if (!isUserLoggedIn()) {
-    redirectToLogin();
-  }
-
-  const userEmail = getCurrentUser();
-  if (!userEmail) {
-    redirectToLogin();
-  }
-
-  // Display user email
- // document.getElementById('userEmail').textContent = userEmail;
-
-  // ===================== API HELPERS =====================
-  async function apiCall(endpoint, options = {}) {
-    try {
-      const response = await fetch(`${API_BASE}${endpoint}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers
-        },
-        ...options
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || 'API call failed');
-      }
-      
-      return data;
-    } catch (error) {
-      console.error('API Error:', error);
-      throw error;
+    // ===================== AUTHENTICATION =====================
+    function getCurrentUser() {
+      return sessionStorage.getItem('userEmail');
     }
-  }
 
-  // ===================== DATABASE INTEGRATION =====================
-  
-  // Load tile data from database APIs
-  async function loadTileData(tileType) {
-    try {
-      const data = await apiCall(`/${tileType}/${encodeURIComponent(userEmail)}`);
-      return data;
-    } catch (error) {
-      console.error(`Failed to load ${tileType}:`, error);
-      return [];
+    function isUserLoggedIn() {
+      return sessionStorage.getItem('isLoggedIn') === 'true';
     }
-  }
 
-  // ===================== DASHBOARD RENDERING =====================
+    function redirectToLogin() {
+      alert('Please log in to access this page');
+      window.location.href = 'index.html'; // Changed from '/' to index.html for safety
+    }
 
-  // Render tile content
-  function renderTile(tileType) {
-    loadTileData(tileType).then(data => {
-      const contentEl = document.getElementById(`${tileType}-content`);
-      
-      if (data.length === 0) {
-        contentEl.innerHTML = `<div class="empty-state">No ${tileType} yet</div>`;
-        return;
-      }
+    // Check authentication
+    if (!isUserLoggedIn()) {
+      redirectToLogin();
+    }
 
-      // Show top 3 items for all tiles (including career)
-      const topItems = data.slice(0, 3);
-      contentEl.innerHTML = topItems.map(item => {
-        let displayText = item.title || item.name || item.content || item.description || '';
-        
-        // Add specific formatting based on tile type
-        switch(tileType) {
-          case 'deadlines':
-            if (item.due_date) {
-              const daysLeft = Math.ceil((new Date(item.due_date) - new Date()) / (1000 * 60 * 60 * 24));
-              displayText += ` <span style="color: ${daysLeft <= 0 ? '#ef4444' : 'var(--text-secondary)'}; font-size: 0.813rem;">(${daysLeft > 0 ? daysLeft + ' days' : 'overdue'})</span>`;
-            }
-            break;
-          case 'ideas':
-            if (item.category) {
-              displayText += ` <span style="color: var(--text-secondary); font-size: 0.813rem;">• ${item.category}</span>`;
-            }
-            break;
-          case 'future':
-            if (item.timeline) {
-              displayText += ` <span style="color: var(--text-secondary); font-size: 0.813rem;">(${item.timeline})</span>`;
-            }
-            break;
+    const userEmail = getCurrentUser();
+    if (!userEmail) {
+      redirectToLogin();
+    }
+
+    // ===================== API HELPERS =====================
+    async function apiCall(endpoint, options = {}) {
+      try {
+        const response = await fetch(`${API_BASE}${endpoint}`, {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers
+          },
+          ...options
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'API call failed');
         }
-        
-        return `<div class="tile-item">${displayText}</div>`;
-      }).join('');
-      
-      if (data.length > 3) {
-        contentEl.innerHTML += `<div class="empty-state" style="margin-top: 10px;">+${data.length - 3} more items</div>`;
+
+        return data;
+      } catch (error) {
+        console.error('API Error:', error);
+        throw error;
       }
-    }).catch(error => {
-      const contentEl = document.getElementById(`${tileType}-content`);
-      contentEl.innerHTML = `<div class="error">Failed to load ${tileType}</div>`;
-      console.error(`Error rendering ${tileType}:`, error);
-    });
-  }
+    }
 
-  // Initialize all tiles
-  function initializeDashboard() {
-    const tileTypes = ['deadlines', 'ideas', 'projects', 'notes', 'career', 'future'];
-    tileTypes.forEach(renderTile);
-  }
+    // ===================== DATABASE INTEGRATION =====================
+    async function loadTileData(tileType) {
+      try {
+        const data = await apiCall(`/${tileType}/${encodeURIComponent(userEmail)}`);
+        return data;
+      } catch (error) {
+        console.error(`Failed to load ${tileType}:`, error);
+        return [];
+      }
+    }
 
-  // ===================== NAVIGATION =====================
-  const menuDashboard = document.getElementById("menu-dashboard");
-  const menuCalendar = document.getElementById("menu-calendar");
+    // ===================== DASHBOARD RENDERING =====================
+    function renderTile(tileType) {
+      loadTileData(tileType).then(data => {
+        const contentEl = document.getElementById(`${tileType}-content`);
 
-  menuDashboard.onclick = () => {
-    menuDashboard.classList.add("active");
-    menuCalendar.classList.remove("active");
-  };
+        if (data.length === 0) {
+          contentEl.innerHTML = `<div class="empty-state">No items yet</div>`;
+          return;
+        }
 
-  menuCalendar.onclick = () => {
-    window.location.href = '/outlook-calendar.html';
-  };
+        // Show top 3 items
+        const topItems = data.slice(0, 3);
+        contentEl.innerHTML = topItems.map(item => {
+          let displayText = item.title || item.name || item.content || item.description || '';
 
-  const menuProfile = document.getElementById("menu-profile");
-  if (menuProfile) {
-    menuProfile.onclick = () => {
-      window.location.href = '/profile.html';
+          switch (tileType) {
+            case 'deadlines':
+              if (item.due_date) {
+                const daysLeft = Math.ceil((new Date(item.due_date) - new Date()) / (1000 * 60 * 60 * 24));
+                displayText += ` <span style="color: ${daysLeft <= 0 ? '#ef4444' : 'var(--text-secondary)'}; font-size: 0.8rem;">(${daysLeft > 0 ? daysLeft + ' days' : 'overdue'})</span>`;
+              }
+              break;
+            case 'ideas':
+              if (item.category) displayText += ` <span style="font-size: 0.8rem; margin-left: 5px; opacity: 0.7;">[${item.category}]</span>`;
+              break;
+            case 'future':
+              if (item.timeline) displayText += ` <span style="font-size: 0.8rem; margin-left: 5px; opacity: 0.7;">(${item.timeline})</span>`;
+              break;
+          }
+
+          return `<div class="tile-item">${displayText}</div>`;
+        }).join('');
+
+        if (data.length > 3) {
+          contentEl.innerHTML += `<div class="empty-state" style="padding: 5px; font-size: 0.8rem;">+${data.length - 3} more</div>`;
+        }
+      }).catch(error => {
+        const contentEl = document.getElementById(`${tileType}-content`);
+        contentEl.innerHTML = `<div class="error">Load failed</div>`;
+      });
+    }
+
+    function initializeDashboard() {
+      const tileTypes = ['deadlines', 'ideas', 'projects', 'notes', 'career', 'future'];
+      tileTypes.forEach(renderTile);
+
+      // Set Date
+      const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', dateOptions);
+    }
+
+    // ===================== INTERACTION =====================
+    // Logout
+    document.getElementById("logoutBtn").onclick = (e) => {
+      e.preventDefault();
+      sessionStorage.removeItem("userEmail");
+      sessionStorage.removeItem("isLoggedIn");
+      window.location.href = "index.html";
     };
-  }
 
-  const menuAboutUs = document.getElementById("menu-aboutus");
-  if (menuAboutUs) {
-    menuAboutUs.onclick = () => {
-      window.location.href = '/aboutus.html';
-    };
-  }
+    // Tile clicks
+    document.querySelectorAll('.dashboard-tile').forEach(tile => {
+      tile.addEventListener('click', (e) => {
+        // Prevent click if clicking button
+        if (e.target.tagName === 'BUTTON') return;
 
-  // Tile click handlers
-  document.querySelectorAll('.dashboard-tile').forEach(tile => {
-    tile.addEventListener('click', () => {
-      const tileType = tile.dataset.tile;
-      
-      sessionStorage.setItem('activeTile', tileType);
-      
-      switch(tileType) {
-        case 'ideas':
-          window.location.href = 'ideas.html';
-          break;
-        case 'notes':
-          window.location.href = 'notes.html';
-          break;
-        case 'projects':
-          window.location.href = 'projects.html';
-          break;
-        case 'deadlines':
-          window.location.href = 'deadlines.html';
-          break;
-        case 'career':
-          window.location.href = 'career.html';
-          break;
-        case 'future':
-          window.location.href = 'future.html';
-          break;
-        default:
-          alert(`${tileType.charAt(0).toUpperCase() + tileType.slice(1)} Management\n\nThis would redirect to a dedicated ${tileType} management page.`);
+        const tileType = tile.dataset.tile;
+        sessionStorage.setItem('activeTile', tileType);
+
+        // Mapping simple check
+        const pages = {
+          'ideas': 'ideas.html',
+          'notes': 'notes.html',
+          'projects': 'projects.html',
+          'deadlines': 'deadlines.html',
+          'career': 'career.html',
+          'future': 'future.html'
+        };
+
+        if (pages[tileType]) {
+          window.location.href = pages[tileType];
+        } else {
+          alert('Coming soon: ' + tileType);
+        }
+      });
+
+      // Button clicks inside tiles
+      const btn = tile.querySelector('.tile-button');
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Avoid double event
+          const tileType = tile.dataset.tile;
+          const pages = {
+            'ideas': 'ideas.html',
+            'notes': 'notes.html',
+            'projects': 'projects.html',
+            'deadlines': 'deadlines.html',
+            'career': 'career.html',
+            'future': 'future.html'
+          };
+          if (pages[tileType]) window.location.href = pages[tileType];
+        });
       }
     });
-  });
 
-  // Logout
-  document.getElementById("logout").onclick = () => {
-    sessionStorage.removeItem("userEmail");
-    sessionStorage.removeItem("isLoggedIn");
-    window.location.href = "/";
-  };
-
-  // ===================== INITIALIZATION =====================
-  initializeDashboard();
+    initializeDashboard();
 
   </script>
 </body>
+
 </html>
-
-

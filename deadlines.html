@@ -1,358 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <title>Deadlines - Project Management</title>
+  <title>Deadlines - UniDesk</title>
+  <link rel="stylesheet" href="styles.css">
   <style>
-    :root {
-      --accent: #ef4444;
-      --accent-hover: #dc2626;
-      --bg: #f8f9fc;
-      --card: #ffffff;
-      --muted: #64748b;
-      --text-primary: #0f172a;
-      --text-secondary: #475569;
-      --success: #10b981;
-      --warning: #f59e0b;
-      --border: #e2e8f0;
+    /* Deadlines Specific Styles */
+    .page-header {
+      text-align: center;
+      margin: var(--spacing-xl) 0 var(--spacing-lg);
+      animation: fadeIn 0.6s ease-out;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
-      background: var(--bg);
-      min-height: 100vh;
+    .page-title {
+      font-family: var(--font-heading);
+      font-size: 2.5rem;
       color: var(--text-primary);
+      margin-bottom: var(--spacing-xs);
     }
 
-    .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    .header {
+    .filter-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-sm);
+      border-radius: 4px;
+      /* Minimal radius */
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 32px;
-      flex-wrap: wrap;
-      gap: 15px;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .back-btn {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 10px 15px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.938rem;
-      transition: all 0.2s;
-      text-decoration: none;
-      color: var(--text-primary);
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-weight: 500;
-    }
-
-    .back-btn:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-      color: var(--text-primary);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-weight: 600;
-    }
-
-    .add-btn {
-      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 600;
-      transition: transform 0.2s, box-shadow 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .add-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-    }
-
-    .filter-section {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      border: 1px solid var(--border);
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      align-items: center;
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-soft);
     }
 
     .filter-group {
       display: flex;
+      gap: 15px;
       align-items: center;
-      gap: 8px;
-    }
-
-    .filter-group label {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-      font-weight: 500;
     }
 
     .filter-select {
-      padding: 8px 12px;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      font-size: 0.875rem;
-      cursor: pointer;
-      background: white;
+      border: none;
+      background: transparent;
+      font-family: var(--font-body);
+      font-weight: 700;
       color: var(--text-primary);
+      cursor: pointer;
+      padding-right: 15px;
+      font-size: 0.9rem;
     }
 
-    .deadlines-grid {
-      display: grid;
-      gap: 20px;
+    .filter-select:focus {
+      outline: none;
     }
 
-    .deadline-card {
-      background: white;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      border: 1px solid var(--border);
-      border-left: 4px solid var(--accent);
-      transition: transform 0.2s, box-shadow 0.2s;
-      position: relative;
+    /* List Layout */
+    .deadline-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
     }
 
-    .deadline-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-
-    .deadline-card.overdue {
-      border-left-color: #dc2626;
-      background: #fef2f2;
-    }
-
-    .deadline-card.today {
-      border-left-color: var(--warning);
-      background: #fffbeb;
-    }
-
-    .deadline-card.upcoming {
-      border-left-color: var(--success);
-    }
-
-    .deadline-card.completed {
-      opacity: 0.7;
-      border-left-color: #9ca3af;
-    }
-
-    .deadline-header {
+    .deadline-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: var(--spacing-md);
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
-      gap: 15px;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .deadline-item:hover {
+      transform: translateX(5px);
+      border-color: var(--accent-tertiary);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .deadline-content {
+      flex: 1;
     }
 
     .deadline-title {
-      font-size: 1.125rem;
-      font-weight: 600;
+      font-family: var(--font-heading);
+      font-size: 1.2rem;
+      margin-bottom: 5px;
       color: var(--text-primary);
-      flex: 1;
+    }
+
+    .deadline-meta {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      display: flex;
+      gap: 15px;
+      align-items: center;
+    }
+
+    .tag {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 2px 6px;
+      border-radius: 2px;
+      font-weight: 700;
+    }
+
+    .tag-urgent {
+      color: #fff;
+      background-color: var(--accent-quaternary);
+    }
+
+    .tag-medium {
+      color: var(--text-primary);
+      background-color: #EFE9DB;
+      border: 1px solid #dcdcdc;
+    }
+
+    .tag-low {
+      color: var(--text-secondary);
+      background-color: #fdfdfd;
+      border: 1px solid #eee;
     }
 
     .deadline-actions {
       display: flex;
-      gap: 8px;
-    }
-
-    .icon-btn {
-      background: transparent;
-      border: 1px solid var(--border);
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      transition: all 0.2s;
-    }
-
-    .icon-btn:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-
-    .icon-btn.delete:hover {
-      background: #fef2f2;
-      border-color: #fecaca;
-      color: #dc2626;
-    }
-
-    .deadline-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 12px;
-      font-size: 0.875rem;
-    }
-
-    .meta-item {
-      display: flex;
+      gap: 10px;
       align-items: center;
-      gap: 5px;
+    }
+
+    .days-display {
+      font-family: var(--font-heading);
+      font-size: 1.5rem;
       color: var(--text-secondary);
+      min-width: 60px;
+      text-align: right;
     }
 
-    .priority-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.813rem;
-      font-weight: 600;
+    .overdue-text {
+      color: var(--accent-quaternary);
     }
 
-    .priority-high {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .priority-medium {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .priority-low {
-      background: #dbeafe;
-      color: #1e40af;
-    }
-
-    .status-badge {
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-size: 0.813rem;
-      font-weight: 600;
-    }
-
-    .status-pending {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .status-completed {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
-    .deadline-description {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-top: 10px;
-      word-wrap: break-word;
-      word-break: break-word;
-      overflow-wrap: break-word;
-      font-size: 0.875rem;
-    }
-
-    .days-left {
-      font-weight: 600;
-      padding: 6px 12px;
-      border-radius: 8px;
-      display: inline-block;
-      font-size: 0.813rem;
-    }
-
-    .days-left.overdue {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-
-    .days-left.today {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .days-left.upcoming {
-      background: #d1fae5;
-      color: #065f46;
-    }
-
+    /* Modals (Reused style) */
     .modal {
       display: none;
       position: fixed;
-      top: 0;
+      z-index: 100;
       left: 0;
+      top: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      justify-content: center;
+      background-color: rgba(23, 58, 42, 0.4);
+      backdrop-filter: blur(4px);
       align-items: center;
-      z-index: 1000;
-    }
-
-    .modal.active {
-      display: flex;
+      justify-content: center;
     }
 
     .modal-content {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      width: 90%;
+      background-color: var(--bg-card);
+      padding: 40px;
+      border: 1px solid var(--border-color);
+      width: 100%;
       max-width: 500px;
-      max-height: 90vh;
-      overflow-y: auto;
-    }
-
-    .modal-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-
-    .modal-header h2 {
-      font-size: 1.25rem;
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .close-btn {
-      background: none;
-      border: none;
-      font-size: 1.5rem;
-      cursor: pointer;
-      color: var(--muted);
-      padding: 0;
-      width: 30px;
-      height: 30px;
+      box-shadow: var(--shadow-hover);
+      animation: fadeIn 0.3s ease-out;
     }
 
     .form-group {
@@ -362,167 +173,73 @@
     .form-group label {
       display: block;
       margin-bottom: 8px;
-      font-weight: 600;
-      color: var(--text-primary);
-      font-size: 0.875rem;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-family: inherit;
-      color: var(--text-primary);
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    .form-actions {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 25px;
-    }
-
-    .btn-cancel {
-      background: white;
-      border: 1px solid var(--border);
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 500;
-      color: var(--text-primary);
-    }
-
-    .btn-save {
-      background: linear-gradient(135deg, var(--accent), var(--accent-hover));
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.875rem;
-      font-weight: 600;
-    }
-
-    .empty-state {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--text-secondary);
-    }
-
-    .empty-state-icon {
-      font-size: 4rem;
-      margin-bottom: 15px;
-    }
-
-    .empty-state h3 {
-      font-size: 1.125rem;
-      margin-bottom: 10px;
-      color: var(--text-primary);
-      font-weight: 600;
-    }
-
-    .empty-state p {
-      font-size: 0.875rem;
-      color: var(--text-secondary);
-    }
-
-    @media (max-width: 768px) {
-      .header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .filter-section {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .deadline-header {
-        flex-direction: column;
-      }
-
-      .deadline-actions {
-        align-self: flex-end;
-      }
-
-      .container {
-        padding: 24px 20px;
-      }
-
-      h1 {
-        font-size: 1.25rem;
-      }
+      font-weight: 700;
+      font-size: 0.9rem;
     }
   </style>
 </head>
-<body>
-  <div class="container">
-    <div class="header">
-      <div class="header-left">
-        <a href="dashboard.html" class="back-btn">← Back</a>
-        <h1>⏰ Deadlines</h1>
-      </div>
-      <button class="add-btn" onclick="openAddModal()">
-        + Add Deadline
-      </button>
-    </div>
 
-    <div class="filter-section">
+<body>
+  <nav class="main-nav navbar">
+    <div class="container flex justify-between items-center" style="width:100%">
+      <div class="brand-logo">UniDesk</div>
+      <ul class="nav-links">
+        <li><a href="dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="projects.html" class="nav-link">Projects</a></li>
+        <li><a href="profile.html" class="nav-link">Team</a></li>
+        <li><a href="#" class="nav-link" style="border-bottom: 1px solid var(--accent-quaternary);">Reports</a></li>
+        <!-- Using Reports/Deadlines loosely here -->
+        <li><a href="#" class="nav-link" id="logoutBtn">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <header class="page-header">
+      <h1 class="page-title">Deadlines</h1>
+      <p>Stay updated with your schedule.</p>
+    </header>
+
+    <div class="filter-bar">
       <div class="filter-group">
-        <label>Status:</label>
-        <select class="filter-select" id="statusFilter" onchange="applyFilters()">
-          <option value="all">All</option>
+        <span style="font-size:0.9rem; color:var(--text-secondary);">Sort by:</span>
+        <select id="sortFilter" class="filter-select">
+          <option value="date">Date</option>
+          <option value="priority">Priority</option>
+        </select>
+
+        <span style="font-size:0.9rem; color:var(--text-secondary); margin-left:10px;">Filter:</span>
+        <select id="statusFilter" class="filter-select">
+          <option value="all">All Status</option>
           <option value="pending">Pending</option>
           <option value="completed">Completed</option>
         </select>
       </div>
-      <div class="filter-group">
-        <label>Priority:</label>
-        <select class="filter-select" id="priorityFilter" onchange="applyFilters()">
-          <option value="all">All</option>
-          <option value="high">High</option>
-          <option value="medium">Medium</option>
-          <option value="low">Low</option>
-        </select>
-      </div>
+      <button id="addDeadlineBtn" class="btn">+ New Deadline</button>
     </div>
 
-    <div class="deadlines-grid" id="deadlinesGrid">
-      <div class="empty-state">
-        <div class="empty-state-icon">⏰</div>
-        <h3>No deadlines yet</h3>
-        <p>Click "Add Deadline" to create your first deadline</p>
-      </div>
+    <div id="loading" class="text-center" style="display:none; padding:40px;">Loading...</div>
+    <div id="deadlineList" class="deadline-list">
+      <!-- JS Injection -->
     </div>
   </div>
 
-  <!-- Add/Edit Modal -->
+  <!-- Modal -->
   <div class="modal" id="deadlineModal">
     <div class="modal-content">
-      <div class="modal-header">
-        <h2 id="modalTitle">Add Deadline</h2>
-        <button class="close-btn" onclick="closeModal()">×</button>
+      <h3 id="modalTitle" style="margin-bottom:20px;">New Deadline</h3>
+
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="titleInput" placeholder="Task name" />
       </div>
-      <form id="deadlineForm" onsubmit="saveDeadline(event)">
-        <div class="form-group">
-          <label>Title *</label>
-          <input type="text" id="titleInput" required>
+
+      <div class="flex gap-md">
+        <div class="form-group" style="flex:1;">
+          <label>Due Date</label>
+          <input type="date" id="dueDateInput" />
         </div>
-        <div class="form-group">
-          <label>Due Date *</label>
-          <input type="date" id="dueDateInput" required>
-        </div>
-        <div class="form-group">
+        <div class="form-group" style="flex:1;">
           <label>Priority</label>
           <select id="priorityInput">
             <option value="low">Low</option>
@@ -530,240 +247,156 @@
             <option value="high">High</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>Status</label>
-          <select id="statusInput">
-            <option value="pending" selected>Pending</option>
-            <option value="completed">Completed</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea id="descriptionInput"></textarea>
-        </div>
-        <div class="form-actions">
-          <button type="button" class="btn-cancel" onclick="closeModal()">Cancel</button>
-          <button type="submit" class="btn-save">Save</button>
-        </div>
-      </form>
+      </div>
+
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="descInput" rows="3" placeholder="Optional details..."></textarea>
+      </div>
+
+      <div class="flex justify-between" style="border-top:1px solid #eee; padding-top:20px;">
+        <button id="closeModalBtn" class="btn-secondary" style="border:none;">Cancel</button>
+        <button id="saveDeadlineBtn" class="btn">Save Deadline</button>
+      </div>
     </div>
   </div>
 
   <script>
     const API_BASE = window.location.origin;
+    if (sessionStorage.getItem('isLoggedIn') !== 'true' || !sessionStorage.getItem('userEmail')) window.location.href = 'index.html';
+    const userEmail = sessionStorage.getItem('userEmail');
+
     let allDeadlines = [];
-    let editingId = null;
+    const container = document.getElementById('deadlineList');
+    const modal = document.getElementById('deadlineModal');
 
-    function getCurrentUser() {
-      return sessionStorage.getItem('userEmail');
-    }
-
-    function isUserLoggedIn() {
-      return sessionStorage.getItem('isLoggedIn') === 'true';
-    }
-
-    if (!isUserLoggedIn()) {
-      alert('Please log in to access this page');
-      window.location.href = '/';
-    }
-
-    const userEmail = getCurrentUser();
-    if (!userEmail) {
-      alert('Please log in to access this page');
-      window.location.href = '/';
-    }
-
+    // Load
     async function loadDeadlines() {
+      document.getElementById('loading').style.display = 'block';
+      container.innerHTML = '';
       try {
-        const response = await fetch(`${API_BASE}/deadlines/${encodeURIComponent(userEmail)}`);
-        const data = await response.json();
-        allDeadlines = data;
-        renderDeadlines(allDeadlines);
-      } catch (error) {
-        console.error('Error loading deadlines:', error);
-        alert('Failed to load deadlines');
+        const res = await fetch(`${API_BASE}/deadlines/${encodeURIComponent(userEmail)}`);
+        allDeadlines = await res.json();
+        render();
+      } catch (e) {
+        container.innerHTML = '<div class="text-center">Error loading data.</div>';
+      } finally {
+        document.getElementById('loading').style.display = 'none';
       }
     }
 
-    function getDaysLeft(dueDate) {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const due = new Date(dueDate);
-      due.setHours(0, 0, 0, 0);
-      const diff = Math.ceil((due - today) / (1000 * 60 * 60 * 24));
-      return diff;
-    }
+    function render() {
+      const sort = document.getElementById('sortFilter').value;
+      const status = document.getElementById('statusFilter').value;
 
-    function getDeadlineClass(dueDate, status) {
-      if (status === 'completed') return 'completed';
-      const daysLeft = getDaysLeft(dueDate);
-      if (daysLeft < 0) return 'overdue';
-      if (daysLeft === 0) return 'today';
-      return 'upcoming';
-    }
+      let filtered = allDeadlines.filter(d => status === 'all' || d.status === status);
 
-    function getDaysLeftText(dueDate, status) {
-      if (status === 'completed') return 'Completed';
-      const daysLeft = getDaysLeft(dueDate);
-      if (daysLeft < 0) return `${Math.abs(daysLeft)} days overdue`;
-      if (daysLeft === 0) return 'Due today';
-      if (daysLeft === 1) return '1 day left';
-      return `${daysLeft} days left`;
-    }
+      // Sort
+      filtered.sort((a, b) => {
+        if (sort === 'date') return new Date(a.due_date) - new Date(b.due_date);
+        // Priority: High > Med > Low
+        const pMap = { high: 0, medium: 1, low: 2 };
+        return pMap[a.priority] - pMap[b.priority];
+      });
 
-    function renderDeadlines(deadlines) {
-      const grid = document.getElementById('deadlinesGrid');
-      
-      if (deadlines.length === 0) {
-        grid.innerHTML = `
-          <div class="empty-state">
-            <div class="empty-state-icon">⏰</div>
-            <h3>No deadlines found</h3>
-            <p>Try adjusting your filters or add a new deadline</p>
-          </div>
-        `;
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="text-center" style="font-style:italic; color:var(--text-secondary); padding:40px;">No deadlines found.</div>';
         return;
       }
 
-      // Sort by due date (nearest first)
-      const sorted = [...deadlines].sort((a, b) => {
-        if (a.status === 'completed' && b.status !== 'completed') return 1;
-        if (a.status !== 'completed' && b.status === 'completed') return -1;
-        return new Date(a.due_date) - new Date(b.due_date);
-      });
+      container.innerHTML = filtered.map(d => {
+        const date = new Date(d.due_date);
+        const daysLeft = Math.ceil((date - new Date()) / (1000 * 60 * 60 * 24));
+        const isOverdue = daysLeft < 0;
+        const isCompleted = d.status === 'completed';
 
-      grid.innerHTML = sorted.map(deadline => {
-        const deadlineClass = getDeadlineClass(deadline.due_date, deadline.status);
-        const daysLeftText = getDaysLeftText(deadline.due_date, deadline.status);
-        const dueDate = new Date(deadline.due_date).toLocaleDateString('en-US', { 
-          month: 'short', 
-          day: 'numeric', 
-          year: 'numeric' 
-        });
+        let tagClass = 'tag-low';
+        if (d.priority === 'high') tagClass = 'tag-urgent';
+        if (d.priority === 'medium') tagClass = 'tag-medium';
+
+        const daysText = isCompleted ? '✓' : (isOverdue ? `${Math.abs(daysLeft)}d late` : (daysLeft === 0 ? 'Today' : `${daysLeft}d`));
+        const daysClass = (isOverdue && !isCompleted) ? 'overdue-text' : '';
+        const opacity = isCompleted ? '0.6' : '1';
 
         return `
-          <div class="deadline-card ${deadlineClass}">
-            <div class="deadline-header">
-              <div class="deadline-title">${deadline.title}</div>
-              <div class="deadline-actions">
-                <button class="icon-btn" onclick="editDeadline(${deadline.id})" title="Edit">✏️</button>
-                <button class="icon-btn delete" onclick="deleteDeadline(${deadline.id})" title="Delete">🗑️</button>
-              </div>
-            </div>
-            <div class="deadline-meta">
-              <span class="meta-item">📅 ${dueDate}</span>
-              <span class="priority-badge priority-${deadline.priority}">${deadline.priority.toUpperCase()}</span>
-              <span class="status-badge status-${deadline.status}">${deadline.status}</span>
-              <span class="days-left ${deadlineClass}">${daysLeftText}</span>
-            </div>
-            ${deadline.description ? `<div class="deadline-description">${deadline.description}</div>` : ''}
-          </div>
-        `;
+            <div class="deadline-item" style="opacity:${opacity}">
+                <div class="deadline-content">
+                    <h3 class="deadline-title">${d.title}</h3>
+                    <div class="deadline-meta">
+                        <span>${date.toLocaleDateString()}</span>
+                        <span class="tag ${tagClass}">${d.priority}</span>
+                        ${d.description ? `<span>- ${d.description.substring(0, 30)}...</span>` : ''}
+                    </div>
+                </div>
+                <div class="deadline-actions">
+                    <div class="days-display ${daysClass}">${daysText}</div>
+                    <button class="btn-secondary btn-sm" onclick="toggleStatus(${d.id}, '${d.status}')" style="padding:5px 10px;">${isCompleted ? 'Undo' : 'Done'}</button>
+                    ${!isCompleted ? `<button class="btn-secondary btn-sm" onclick="deleteItem(${d.id})" style="color:var(--accent-quaternary); border-color:transparent;">×</button>` : ''}
+                </div>
+            </div>`;
       }).join('');
     }
 
-    function applyFilters() {
-      const statusFilter = document.getElementById('statusFilter').value;
-      const priorityFilter = document.getElementById('priorityFilter').value;
+    // Interactions
+    document.getElementById('addDeadlineBtn').onclick = () => {
+      document.getElementById('titleInput').value = '';
+      document.getElementById('descInput').value = '';
+      modal.style.display = 'flex';
+    };
 
-      let filtered = allDeadlines;
+    document.getElementById('closeModalBtn').onclick = () => modal.style.display = 'none';
 
-      if (statusFilter !== 'all') {
-        filtered = filtered.filter(d => d.status === statusFilter);
-      }
+    document.getElementById('saveDeadlineBtn').onclick = async () => {
+      const title = document.getElementById('titleInput').value;
+      const due_date = document.getElementById('dueDateInput').value;
+      const priority = document.getElementById('priorityInput').value;
+      const description = document.getElementById('descInput').value;
 
-      if (priorityFilter !== 'all') {
-        filtered = filtered.filter(d => d.priority === priorityFilter);
-      }
+      if (!title || !due_date) return alert('Title and Date required');
 
-      renderDeadlines(filtered);
+      await fetch(`${API_BASE}/deadlines`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_email: userEmail, title, due_date, priority, status: 'pending', description })
+      });
+
+      modal.style.display = 'none';
+      loadDeadlines();
     }
 
-    function openAddModal() {
-      editingId = null;
-      document.getElementById('modalTitle').textContent = 'Add Deadline';
-      document.getElementById('deadlineForm').reset();
-      document.getElementById('deadlineModal').classList.add('active');
-    }
+    window.toggleStatus = async (id, current) => {
+      const newStatus = current === 'pending' ? 'completed' : 'pending';
+      // We need full object to update usually, but let's try just patched fields if API supports, 
+      // OR find obj locally to re-submit.
+      const item = allDeadlines.find(x => x.id === id);
+      if (!item) return;
 
-    function editDeadline(id) {
-      const deadline = allDeadlines.find(d => d.id === id);
-      if (!deadline) return;
+      await fetch(`${API_BASE}/deadlines/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...item, status: newStatus })
+      });
+      loadDeadlines();
+    };
 
-      editingId = id;
-      document.getElementById('modalTitle').textContent = 'Edit Deadline';
-      document.getElementById('titleInput').value = deadline.title;
-      document.getElementById('dueDateInput').value = deadline.due_date;
-      document.getElementById('priorityInput').value = deadline.priority;
-      document.getElementById('statusInput').value = deadline.status;
-      document.getElementById('descriptionInput').value = deadline.description || '';
-      document.getElementById('deadlineModal').classList.add('active');
-    }
-
-    function closeModal() {
-      document.getElementById('deadlineModal').classList.remove('active');
-      document.getElementById('deadlineForm').reset();
-      editingId = null;
-    }
-
-    async function saveDeadline(event) {
-      event.preventDefault();
-
-      const data = {
-        user_email: userEmail,
-        title: document.getElementById('titleInput').value.trim(),
-        due_date: document.getElementById('dueDateInput').value,
-        priority: document.getElementById('priorityInput').value,
-        status: document.getElementById('statusInput').value,
-        description: document.getElementById('descriptionInput').value.trim()
-      };
-
-      try {
-        if (editingId) {
-          await fetch(`${API_BASE}/deadlines/${editingId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-        } else {
-          await fetch(`${API_BASE}/deadlines`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-          });
-        }
-
-        closeModal();
+    window.deleteItem = async (id) => {
+      if (confirm('Delete?')) {
+        await fetch(`${API_BASE}/deadlines/${id}`, { method: 'DELETE' });
         loadDeadlines();
-      } catch (error) {
-        console.error('Error saving deadline:', error);
-        alert('Failed to save deadline');
       }
     }
 
-    async function deleteDeadline(id) {
-      if (!confirm('Are you sure you want to delete this deadline?')) return;
+    document.getElementById('statusFilter').onchange = render;
+    document.getElementById('sortFilter').onchange = render;
 
-      try {
-        await fetch(`${API_BASE}/deadlines/${id}`, {
-          method: 'DELETE'
-        });
-        loadDeadlines();
-      } catch (error) {
-        console.error('Error deleting deadline:', error);
-        alert('Failed to delete deadline');
-      }
+    document.getElementById('logoutBtn').onclick = (e) => {
+      e.preventDefault();
+      sessionStorage.clear();
+      window.location.href = 'index.html';
     }
 
-    // Close modal on outside click
-    document.getElementById('deadlineModal').addEventListener('click', (e) => {
-      if (e.target.id === 'deadlineModal') {
-        closeModal();
-      }
-    });
-
-    // Load deadlines on page load
     loadDeadlines();
   </script>
 </body>
+
 </html>
